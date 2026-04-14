@@ -52,8 +52,10 @@ if __name__ == "__main__":
 
 ```
 python-log-analyzer/
-├── log_analyzer.py    # Script utama untuk analisis log
+├── log_analyzer.py    # Script analisis file log
+├── infra_monitor.py   # Script monitoring infrastructure
 ├── sample.log         # File log contoh sebagai input
+├── monitor.log        # Output log dari infra_monitor (auto-generated)
 └── README.md
 ```
 
@@ -65,6 +67,35 @@ python-log-analyzer/
 2. Setiap baris dicek apakah mengandung keyword `INFO`, `WARNING`, atau `ERROR`
 3. Jumlah kemunculan setiap level dihitung dan ditampilkan sebagai ringkasan
 4. Semua baris yang mengandung `ERROR` dikumpulkan dan ditampilkan secara detail
+
+---
+
+## Infrastructure Monitor
+
+### `infra_monitor.py`
+
+Script untuk mengecek apakah service-service infrastruktur (Nginx, WordPress, Grafana, Prometheus) dapat diakses melalui HTTP. Hasil pengecekan ditampilkan di terminal dan dicatat ke file `monitor.log`.
+
+**Cara menggunakan:**
+
+```bash
+python infra_monitor.py
+```
+
+**Contoh output:**
+
+```
+=== Infrastructure Monitor ===
+Waktu: 2026-04-14 10:00:00
+
+	[UP]	Nginx (http://localhost:8080) - HTTP 200
+	[UP]    WordPress (http://localhost:8081) - HTTP 200
+	[UP]    Grafana (http://localhost:3001) - HTTP 200
+	[UP]    Prometheus (http://localhost:9090) - HTTP 200
+
+Ringkasan: 4/4 service aktif
+Log disimpan di monitor.log
+```
 
 ---
 
