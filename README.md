@@ -1,6 +1,6 @@
 # Python Log Analyzer & Infrastructure Monitor
 
-Kumpulan script Python untuk analisis log dan monitoring infrastruktur.
+Kumpulan script Python untuk analisis log, monitoring infrastruktur, dan integrasi dengan Elasticsearch.
 
 ---
 
@@ -80,14 +80,49 @@ Log disimpan di monitor.log
 
 ---
 
+### `log_to_elasticsearch.py`
+
+Script untuk mengirim data log dari file ke Elasticsearch secara otomatis. Membaca file log, memparsing setiap baris berdasarkan format timestamp, level, dan message, lalu mengirimnya sebagai dokumen JSON ke index Elasticsearch.
+
+**Cara menggunakan:**
+
+```bash
+python log_to_elasticsearch.py
+```
+
+**Prasyarat:** Elasticsearch harus sudah berjalan di `localhost:9200`.
+
+**Contoh output:**
+
+```
+Membaca file sample.log...
+  [OK] 2026-04-10T08:01:12 INFO - User login successful
+  [OK] 2026-04-10T08:05:33 ERROR - Database connection timeout
+  [OK] 2026-04-10T08:06:01 WARNING - Disk usage above 80%
+  [OK] 2026-04-10T08:10:45 ERROR - File not found: config.yaml
+  [OK] 2026-04-10T08:15:22 INFO - Backup completed
+
+Selesai: 5 berhasil, 0 gagal
+Cek data di Kibana: http://localhost:5601
+```
+
+**Cara kerja:**
+1. Script membaca file log dan memparsing setiap baris menggunakan regex
+2. Setiap baris dikonversi menjadi dokumen JSON dengan field timestamp, level, dan message
+3. Dokumen dikirim ke Elasticsearch via REST API (HTTP POST)
+4. Hasil pengiriman (berhasil/gagal) ditampilkan di terminal
+
+---
+
 ## Struktur File
 
 ```
 python-log-analyzer/
-├── log_analyzer.py    # Script analisis file log
-├── infra_monitor.py   # Script monitoring infrastruktur
-├── sample.log         # File log contoh sebagai input
-├── monitor.log        # Output log dari infra_monitor (auto-generated)
+├── log_analyzer.py           # Script analisis file log
+├── infra_monitor.py          # Script monitoring infrastruktur
+├── log_to_elasticsearch.py   # Script pengirim log ke Elasticsearch
+├── sample.log                # File log contoh sebagai input
+├── monitor.log               # Output log dari infra_monitor (auto-generated)
 └── README.md
 ```
 
@@ -100,11 +135,13 @@ python-log-analyzer/
 | Python 3 | Bahasa pemrograman utama |
 | File I/O | Membaca dan menulis file log |
 | String Parsing | Mengidentifikasi level log dari setiap baris |
-| urllib | HTTP request untuk pengecekan service |
+| urllib | HTTP request untuk monitoring dan Elasticsearch API |
+| regex | Parsing format log dengan pola tertentu |
 | datetime | Generating timestamp untuk log |
+| json | Serialisasi data ke format JSON untuk Elasticsearch |
 
 ---
 
 ## Tentang
 
-Repository ini dibuat sebagai bagian dari proses belajar pengolahan log dan monitoring infrastruktur. Kedua aktivitas ini merupakan bagian penting dalam operasional infrastruktur untuk mendeteksi error, memantau ketersediaan service, dan melakukan troubleshooting.
+Repository ini dibuat sebagai bagian dari proses belajar pengolahan log, monitoring infrastruktur, dan integrasi dengan Elasticsearch. Ketiga aktivitas ini merupakan bagian penting dalam operasional infrastruktur untuk mendeteksi error, memantau ketersediaan service, dan melakukan centralized logging.
