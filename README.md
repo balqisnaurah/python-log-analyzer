@@ -1,10 +1,22 @@
-# Python Log Analyzer
+# Python Log Analyzer & Infrastructure Monitor
 
-Script Python sederhana untuk menganalisis file log. Script ini menghitung jumlah setiap level log (INFO, WARNING, ERROR) dan menampilkan detail baris yang mengandung error.
+Kumpulan script Python untuk analisis log dan monitoring infrastruktur.
 
 ---
 
-## Contoh Output
+## Daftar Script
+
+### `log_analyzer.py`
+
+Script untuk menganalisis file log. Menghitung jumlah setiap level log (INFO, WARNING, ERROR) dan menampilkan detail baris yang mengandung error.
+
+**Cara menggunakan:**
+
+```bash
+python log_analyzer.py
+```
+
+**Contoh output:**
 
 ```
 === Hasil Analisis Log ===
@@ -18,51 +30,7 @@ ERROR: 3 entries
 2026-04-10 08:20:10 ERROR Memory limit exceeded
 ```
 
----
-
-## Cara Menggunakan
-
-**1. Clone repository ini**
-
-```bash
-git clone https://github.com/balqisnaurah/python-log-analyzer.git
-cd python-log-analyzer
-```
-
-**2. Jalankan script**
-
-```bash
-python log_analyzer.py
-```
-
-Script akan membaca file `sample.log` dan menampilkan hasil analisis di terminal.
-
-**3. Menggunakan file log sendiri**
-
-Ganti nama file pada baris terakhir di `log_analyzer.py`:
-
-```python
-if __name__ == "__main__":
-    analyze_log("nama_file_log_kamu.log")
-```
-
----
-
-## Struktur File
-
-```
-python-log-analyzer/
-├── log_analyzer.py    # Script analisis file log
-├── infra_monitor.py   # Script monitoring infrastructure
-├── sample.log         # File log contoh sebagai input
-├── monitor.log        # Output log dari infra_monitor (auto-generated)
-└── README.md
-```
-
----
-
-## Cara Kerja
-
+**Cara kerja:**
 1. Script membaca file log baris per baris
 2. Setiap baris dicek apakah mengandung keyword `INFO`, `WARNING`, atau `ERROR`
 3. Jumlah kemunculan setiap level dihitung dan ditampilkan sebagai ringkasan
@@ -70,11 +38,18 @@ python-log-analyzer/
 
 ---
 
-## Infrastructure Monitor
-
 ### `infra_monitor.py`
 
-Script untuk mengecek apakah service-service infrastruktur (Nginx, WordPress, Grafana, Prometheus) dapat diakses melalui HTTP. Hasil pengecekan ditampilkan di terminal dan dicatat ke file `monitor.log`.
+Script untuk mengecek apakah service-service infrastruktur dapat diakses melalui HTTP. Hasil pengecekan ditampilkan di terminal dan dicatat ke file `monitor.log`.
+
+**Service yang dimonitor:**
+
+| Service | URL |
+|---------|-----|
+| Nginx | http://localhost:8080 |
+| WordPress | http://localhost:8081 |
+| Grafana | http://localhost:3001 |
+| Prometheus | http://localhost:9090 |
 
 **Cara menggunakan:**
 
@@ -88,13 +63,32 @@ python infra_monitor.py
 === Infrastructure Monitor ===
 Waktu: 2026-04-14 10:00:00
 
-	[UP]	Nginx (http://localhost:8080) - HTTP 200
-	[UP]    WordPress (http://localhost:8081) - HTTP 200
-	[UP]    Grafana (http://localhost:3001) - HTTP 200
-	[UP]    Prometheus (http://localhost:9090) - HTTP 200
+  [UP]   Nginx (http://localhost:8080) - HTTP 200
+  [UP]   WordPress (http://localhost:8081) - HTTP 200
+  [UP]   Grafana (http://localhost:3001) - HTTP 200
+  [UP]   Prometheus (http://localhost:9090) - HTTP 200
 
 Ringkasan: 4/4 service aktif
 Log disimpan di monitor.log
+```
+
+**Cara kerja:**
+1. Script melakukan HTTP request ke setiap service yang terdaftar
+2. Jika response berhasil (HTTP 200), service ditandai UP
+3. Jika request gagal (timeout atau connection refused), service ditandai DOWN
+4. Semua hasil pengecekan ditulis ke file `monitor.log` dengan timestamp
+
+---
+
+## Struktur File
+
+```
+python-log-analyzer/
+├── log_analyzer.py    # Script analisis file log
+├── infra_monitor.py   # Script monitoring infrastruktur
+├── sample.log         # File log contoh sebagai input
+├── monitor.log        # Output log dari infra_monitor (auto-generated)
+└── README.md
 ```
 
 ---
@@ -104,11 +98,13 @@ Log disimpan di monitor.log
 | Teknologi | Fungsi |
 |-----------|--------|
 | Python 3 | Bahasa pemrograman utama |
-| File I/O | Membaca isi file log |
+| File I/O | Membaca dan menulis file log |
 | String Parsing | Mengidentifikasi level log dari setiap baris |
+| urllib | HTTP request untuk pengecekan service |
+| datetime | Generating timestamp untuk log |
 
 ---
 
 ## Tentang
 
-Repository ini dibuat sebagai bagian dari proses belajar pengolahan dan analisis log. Analisis log merupakan salah satu aktivitas penting dalam operasional infrastruktur untuk mendeteksi error, memantau performa sistem, dan melakukan troubleshooting.
+Repository ini dibuat sebagai bagian dari proses belajar pengolahan log dan monitoring infrastruktur. Kedua aktivitas ini merupakan bagian penting dalam operasional infrastruktur untuk mendeteksi error, memantau ketersediaan service, dan melakukan troubleshooting.
